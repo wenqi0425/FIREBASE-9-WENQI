@@ -18,8 +18,7 @@ import {
 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCabbf6sg61iGMjXUs6hAI6N1QHUrVDAHU",
-    // apiKey: process.env.API_KEY,
+    apiKey: process.env.API_KEY,
     authDomain: "fir-wenqi.firebaseapp.com",
     projectId: "fir-wenqi",
     storageBucket: "fir-wenqi.appspot.com",
