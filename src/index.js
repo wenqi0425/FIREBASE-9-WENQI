@@ -15,11 +15,20 @@ import {initializeApp} from 'firebase/app'
 
 // b) addDoc: the function to add documents
 // d1) deleteDoc: the function to delete documents
-// d2) doc: the function to get the reference to the doc 
+// d2) doc: the function to get the reference to the doc
+
+// 7) onSanpshot: the function to do real-time listen / subscribtion to the firebase collection 
+// -- actively listen the changes to the collection. 
+// -- For any changes, it will send back the new snapshot or new data inside the collection.
+
+// 8) query and where: functions for Firestore query. We use where inside the query.
+
 import {
-    getFirestore, collection, getDocs,    
+    getFirestore, collection, /*getDocs*/ 
+    onSnapshot,    
     addDoc, 
-    deleteDoc, doc
+    deleteDoc, doc,
+    query, where
 } from 'firebase/firestore'
 
 const firebaseConfig = {
@@ -55,6 +64,11 @@ const firebaseConfig = {
   // from firestore to get the specific collection of 'books'
   const colRef = collection(db,'books')
 
+  // queries firestore
+  const q = query(colRef, where("author", "==", "wenqi")) 
+
+
+  /*
   // 4) get collection data
   getDocs(colRef)
     .then((snapshot) => {
@@ -68,7 +82,7 @@ const firebaseConfig = {
         let books = []
         // get each doc from firebase documents and put to the book array
         snapshot.docs.forEach((doc) => {
-            // dpc.data returns different data properties, such as the title and the author
+            // doc.data returns different data properties, such as the title and the author
             // ... is used to sepread them into our new object, 
             // to take above two propertities and outputs them into new boject 
             books.push({ ...doc.data() ,id: doc.id })   
@@ -80,9 +94,19 @@ const firebaseConfig = {
 
     .catch(err => {
         console.log(err.message)
+    })*/
+
+    // 7) real-time collection data: () => {} to return the new snapshot after changing data
+    // change "colRef" as q to query the firestore
+    onSnapshot(/*colRef*/q, (snapshot) => {
+        let books = []
+        snapshot.docs.forEach((doc) => {
+            books.push({ ...doc.data(), id: doc.id })   
+        })
+        console.log(books)
     })
 
-    // adding documents
+    // 5) adding documents
     // a) js
     const addBookForm = document.querySelector('.add')
     addBookForm.addEventListener('submit',(e) => {
@@ -103,7 +127,7 @@ const firebaseConfig = {
         })
     })
 
-    // deleting documents
+    // 6) deleting documents
     const deleteBookForm = document.querySelector('.delete')
     deleteBookForm.addEventListener('submit',(e) => {
         e.preventDefault()
